@@ -1,6 +1,7 @@
 import express from "express";
 import { Books } from "../schema/books.js";
 import mongoose from "mongoose";
+import { auth } from "../middleware/authCheck.js";
 
 export const bookRouter = express.Router()
 
@@ -30,7 +31,7 @@ bookRouter.get('/books/:id',async(req,res)=>{
   // res.json(`One book got ${id}`)
 })
 
-bookRouter.post('/books',async(req,res)=>{
+bookRouter.post('/books',auth,async(req,res)=>{
   const {title,author,genre,year} = req.body
   try{
     const book = new Books({title,author,genre,yearPublished:year})
@@ -44,7 +45,7 @@ bookRouter.post('/books',async(req,res)=>{
   // res.json(`New Book Added ${title,author,genre,year}`)
 })
 
-bookRouter.put('/books/:id',async(req,res)=>{
+bookRouter.put('/books/:id',auth,async(req,res)=>{
   const id = req.params.id
   const body = req.body
   try{
@@ -57,7 +58,7 @@ bookRouter.put('/books/:id',async(req,res)=>{
   // res.json(`Book updated with ${id}`)
 })
 
-bookRouter.delete('/books/:id',async(req,res)=>{
+bookRouter.delete('/books/:id',auth,async(req,res)=>{
   const id = req.params.id
   try{
     await Books.findByIdAndDelete(id)

@@ -1,15 +1,9 @@
 import express from "express"
 import { User } from "../schema/user.js"
 import bcrypt from "bcryptjs"
-import passport from "passport"
-import { Strategy } from "passport-local"
-import session from "express-session"
-import isAuthenticated from "../middleware/authCheck.js"
+import jwt from "jsonwebtoken"
 
 export const userRouter = express.Router()
-
-
-
 
 
 
@@ -27,21 +21,16 @@ userRouter.post('/signup',async(req,res)=>{
   }
 })
 
-userRouter.post('/login',  (req,res,next)=>{
-    passport.authenticate('local',(err,user)=>{
-    console.log(err,user)
-    if(err){
-      return res.status(500).json({"message":"An error occured during authentication"})
-    }
-    if(!user){
-      return res.status(401).json({"message":"Incorrect username or password"})
-    }
-    req.logIn(user,(err)=>{
-      if(err) return res.status(500).json({"message":"An error occured during login"})
-      return res.status(200).json({"message":"Login Successfull"})
-    })
-
-  })(req,res,next)
+userRouter.post('/login',async(req,res)=>{
+  const {username,password} = req.body
+  try{
+    const user = await User.findByCredentials(username,password)
+    const access_token = jwt.sign({username:user.username},'secret')
+    return res.status(200).json({user,access_token})
+  }catch(err){
+    console.error(err)
+    res.status(500).send({message:"Login Failed"})
+  }
 })
  
 // userRouter.get('/test',isAuthenticated,(req,res)=>{
@@ -49,8 +38,6 @@ userRouter.post('/login',  (req,res,next)=>{
 // })
 
 userRouter.get('/logout',(req,res,next)=>{
-  req.logOut(req.user,(err)=>{
-    if(err) return next(err)
-  })
-  res.status(200).json({message:"Logout Successfull"})
+  req.headers.authorization = ""
+  res.status(200).send("Logged Out Successfully")
 })
