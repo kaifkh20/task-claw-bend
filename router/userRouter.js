@@ -26,6 +26,7 @@ userRouter.post('/login',async(req,res)=>{
   try{
     const user = await User.findByCredentials(username,password)
     const access_token = jwt.sign({username:user.username},'secret')
+    // console.log("someone logged in")
     return res.status(200).json({user,access_token})
   }catch(err){
     console.error(err)
