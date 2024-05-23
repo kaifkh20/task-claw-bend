@@ -26,7 +26,7 @@ This project provides the back-end API for the `task-claw-fend` book management 
 1. Clone the repository using Git:
 
    ```bash
-   git clone https://github.com/<your-username>/task-claw-fend-backend.git
+   git clone https://github.com/kaifkh20/task-claw-fend-backend.git
    ```
 
 2. Navigate to the project directory:
@@ -44,7 +44,7 @@ This project provides the back-end API for the `task-claw-fend` book management 
 5. Start the server:
 
    ```bash
-   npm start
+   node index.js
    ```
 
 This will start the Node.js server, typically listening on port `3000` by default.
